@@ -10,10 +10,10 @@ class BiodataDetail extends StatelessWidget {
   var _textEditingControllerAddress = TextEditingController();
 
   BiodataDetail(this._biodata) {
-    _textEditingControllerFullname.text = _biodata.fullname;
-    _textEditingControllerGender.text = _biodata.gender;
+    _textEditingControllerFullname.text = capitalize(_biodata.fullname);
+    _textEditingControllerGender.text = capitalize(_biodata.gender);
     _textEditingControllerBirthDate.text = _biodata.dateOfBirth;
-    _textEditingControllerAddress.text = _biodata.address;
+    _textEditingControllerAddress.text = capitalize(_biodata.address);
   }
 
   @override
@@ -93,5 +93,25 @@ class BiodataDetail extends StatelessWidget {
         ),
         border: InputBorder.none,
         labelText: labelText);
+  }
+
+  String capitalize(String string) {
+    List<String> words = string.split(" ");
+    StringBuffer sbOutput = StringBuffer();
+    if (words.length > 0) {
+      for (var word in words) {
+        if (word.length > 1) {
+          sbOutput.write(word[0].toUpperCase() + word.substring(1));
+          sbOutput.write(" ");
+        } else {
+          sbOutput.write("$word ");
+        }
+      }
+    } else {
+      sbOutput.write(string.length > 1
+          ? string[0].toUpperCase() + string.substring(1)
+          : string);
+    }
+    return sbOutput.toString().trim();
   }
 }
