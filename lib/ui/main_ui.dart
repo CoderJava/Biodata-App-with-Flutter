@@ -1,8 +1,12 @@
+import 'package:biodata_app/model/biodata_model.dart';
+import 'package:biodata_app/ui/biodata_detail_ui.dart';
 import 'package:flutter/material.dart';
+
+var colorPrimary = Colors.green;
 
 void main() => runApp(MaterialApp(
       theme: ThemeData(
-        primarySwatch: Colors.green,
+        primarySwatch: colorPrimary,
       ),
       home: MainScreen(),
     ));
@@ -21,6 +25,11 @@ class MainScreenState extends State<MainScreen> {
   var _currentMonthBirth = DateTime.now().month;
   var _currentYearBirth = DateTime.now().year;
 
+  var _textEditingControllerFullname = TextEditingController();
+  var _textEditingControllerAddress = TextEditingController();
+
+  var _keyScaffold = GlobalKey<ScaffoldState>();
+
   @override
   void initState() {
     initDropdownDateBirth();
@@ -30,6 +39,7 @@ class MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _keyScaffold,
       appBar: AppBar(
         title: Text("Biodata"),
       ),
@@ -45,6 +55,7 @@ class MainScreenState extends State<MainScreen> {
               ),
             ),
             TextField(
+              controller: _textEditingControllerFullname,
               textInputAction: TextInputAction.next,
               keyboardType: TextInputType.text,
             ),
@@ -167,7 +178,23 @@ class MainScreenState extends State<MainScreen> {
               ),
             ),
             TextField(
+              controller: _textEditingControllerAddress,
               keyboardType: TextInputType.text,
+              textInputAction: TextInputAction.done,
+            ),
+            Divider(
+              color: Colors.transparent,
+              height: 24.0,
+            ),
+            RaisedButton(
+              color: colorPrimary,
+              textColor: Colors.white,
+              child: Text("Submit"),
+              shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(30.0)),
+              onPressed: () {
+                _pressedSubmitButton();
+              },
             ),
           ],
         ),
@@ -291,6 +318,39 @@ class MainScreenState extends State<MainScreen> {
         return Text("Desember");
       default:
         return Text("-");
+    }
+  }
+
+  void _pressedSubmitButton() {
+    var snackBarInfo;
+    var fullname = _textEditingControllerFullname.text;
+    var address = _textEditingControllerAddress.text;
+    String dateOfBirth =
+        "$_currentDayBirth-$_currentMonthBirth-$_currentYearBirth";
+    var diffentDays = DateTime.now()
+        .difference(
+            DateTime(_currentYearBirth, _currentMonthBirth, _currentDayBirth))
+        .inDays
+        .abs();
+    if (fullname.isEmpty) {
+      snackBarInfo = SnackBar(content: Text("Please fill your Fullname"));
+    } else if (_genderValue.isEmpty) {
+      snackBarInfo = SnackBar(content: Text("Please select your Gender"));
+    } else if (diffentDays < (365 * 5)) {
+      snackBarInfo = SnackBar(content: Text("Minimum age of 5 years"));
+    } else if (address.isEmpty) {
+      snackBarInfo = SnackBar(content: Text("Please fill your Address"));
+    }
+    if (snackBarInfo != null) {
+      _keyScaffold.currentState.showSnackBar(snackBarInfo);
+    } else {
+      var biodata = Biodata(
+          fullname: fullname,
+          gender: _genderValue,
+          dateOfBirth: dateOfBirth,
+          address: address);
+      Navigator.push(context,
+          MaterialPageRoute(builder: (context) => BiodataDetail(biodata)));
     }
   }
 }
