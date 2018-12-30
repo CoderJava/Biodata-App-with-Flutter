@@ -1,17 +1,17 @@
 class Biodata {
-  String _fullname;
-  String _gender;
-  String _dateOfBirth;
-  String _address;
+  String fullname;
+  String gender;
+  String dateOfBirth;
+  String address;
 
   Biodata(
       {String fullname = "",
       String gender = "",
       String dateOfBirth = "",
       String address = ""}) {
-    this._fullname = fullname;
-    this._gender = gender;
-    this._dateOfBirth = dateOfBirth;
-    this._address = address;
+    this.fullname = fullname;
+    this.gender = gender;
+    this.dateOfBirth = dateOfBirth;
+    this.address = address;
   }
 }
